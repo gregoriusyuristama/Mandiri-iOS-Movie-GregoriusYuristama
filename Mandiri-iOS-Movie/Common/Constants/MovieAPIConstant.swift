@@ -13,7 +13,10 @@ class MovieAPIConstant {
     static let getMovieListFromGenreURL = "discover/movie?with_genres="
     static let getMovieDetailFromListURL = "/movie/"
     static func getMovieVideosURL(_ movieId: Int) -> String {
-        return "movie/\(movieId)/videos"
+        return "\(baseApiURL)movie/\(movieId)/videos"
+    }
+    static func getUserReviewsURL(_ movieId: Int) -> String {
+        return "\(baseApiURL)movie/\(movieId)/reviews"
     }
     
     static let accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYjU2NzVlMjM4YmZlOTBlYTJlZmE3ZjlkMzBmMjUyYiIsInN1YiI6IjYzZDMwZmQ5NWEwN2Y1MDBkYzllYTFjZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zD4hklR4DRj-kMlYdojhUBFsGBUPmc84j_z0FdA9DAc"

@@ -8,6 +8,7 @@
 import Foundation
 
 class MovieDetailPresenter: MovieDetailPresenterProtocol {
+    var isPaginationAvailable: Bool?
     
     var router: (any MovieDetailRouterProtocol)?
     
@@ -15,6 +16,7 @@ class MovieDetailPresenter: MovieDetailPresenterProtocol {
         didSet {
             interactor?.getMovieList()
             interactor?.getMovieVideos()
+            interactor?.getUserReviews()
         }
     }
     
@@ -36,5 +38,19 @@ class MovieDetailPresenter: MovieDetailPresenterProtocol {
         case .failure(let failure):
             view?.updateYoutubePlayer(with: failure)
         }
+    }
+    
+    func interactorDidFetchUserReviews(with result: Result<[UserReviewsModel], any Error>, isPagination: Bool, isPaginationAvailable: Bool) {
+        self.isPaginationAvailable = isPaginationAvailable
+        switch result {
+        case .success(let userReviews):
+            view?.updateUserReview(with: userReviews, isPagination: isPagination)
+        case .failure(let failure):
+            view?.updateUserReview(with: failure, isPagination: isPagination)
+        }
+    }
+    
+    func loadMoreUserReviews() {
+        interactor?.getMoreUserReviews()
     }
 }

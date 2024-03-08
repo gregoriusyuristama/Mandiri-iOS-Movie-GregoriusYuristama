@@ -8,6 +8,7 @@
 import Foundation
 
 class MovieDetailManager: MovieDetailManagerProtocol {
+
     func getRemoteMovieVideos(movieList: MovieListModel, completion: @escaping (MovieVideosResponse?, (any Error)?) -> ()) {
         MovieAPI.shared.getMovieVideos(from: movieList) { result in
             switch result {
@@ -28,7 +29,19 @@ class MovieDetailManager: MovieDetailManagerProtocol {
                 completion(nil, failure)
             }
         }
+    }    
+    
+    func getRemoteUserReviews(movieList: MovieListModel, pages: Int? = nil, completion: @escaping (UserReviewsResponse?, (any Error)?) -> ()) {
+        MovieAPI.shared.getUserReviews(from: movieList, pages: pages) { result in
+            switch result {
+            case .success(let success):
+                completion(success, nil)
+            case .failure(let failure):
+                completion(nil, failure)
+            }
+        }
     }
+    
     
     
 }

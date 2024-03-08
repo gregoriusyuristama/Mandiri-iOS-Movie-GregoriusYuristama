@@ -28,8 +28,12 @@ class MovieAPI {
         }
     }
     
-    func getMovieListFromGenre(movieGenre: MovieGenreModel, completion: @escaping (Result<MovieListResponse, Error>) -> Void) {
-        let getMovieListURL = "\(MovieAPIConstant.baseApiURL)\(MovieAPIConstant.getMovieListFromGenreURL)\(movieGenre.id)"
+    func getMovieListFromGenre(movieGenre: MovieGenreModel, pages: Int? = nil, completion: @escaping (Result<MovieListResponse, Error>) -> Void) {
+        var getMovieListURL = "\(MovieAPIConstant.baseApiURL)\(MovieAPIConstant.getMovieListFromGenreURL)\(movieGenre.id)"
+        
+        if let pages {
+            getMovieListURL += "&page=\(pages)"
+        }
         
         AF.request(getMovieListURL, method: .get, headers: self.movieApiHeaders).responseDecodable(of: MovieListResponse.self) { response in
             switch response.result {
@@ -42,7 +46,8 @@ class MovieAPI {
     }
     
     func getMovieDetailFromList(from movieList: MovieListModel, completion: @escaping (Result<MovieDetailModel, Error>) -> Void ) {
-        let getMovieDetailURL = "\(MovieAPIConstant.baseApiURL)\(MovieAPIConstant.getMovieDetailFromListURL)\(movieList.id)"
+        guard let movieId = movieList.id else { return }
+        let getMovieDetailURL = "\(MovieAPIConstant.baseApiURL)\(MovieAPIConstant.getMovieDetailFromListURL)\(movieId)"
         
         AF.request(getMovieDetailURL, method: .get, headers: self.movieApiHeaders).responseDecodable(of: MovieDetailModel.self) { response in
             switch response.result {
@@ -55,7 +60,8 @@ class MovieAPI {
     }
     
     func getMovieVideos(from movieList: MovieListModel, completion: @escaping (Result<MovieVideosResponse, Error>) -> Void ) {
-        let getMovieVideoURL = MovieAPIConstant.baseApiURL+MovieAPIConstant.getMovieVideosURL(movieList.id)
+        guard let movieId = movieList.id else { return }
+        let getMovieVideoURL = MovieAPIConstant.getMovieVideosURL(movieId)
         AF.request(getMovieVideoURL, method: .get, headers: self.movieApiHeaders).responseDecodable(of: MovieVideosResponse.self) { response in
             switch response.result {
             case .success(let success):
@@ -64,5 +70,21 @@ class MovieAPI {
                 completion(.failure(failure))
             }
         }
+    }
+    
+    func getUserReviews(from movieList: MovieListModel, pages: Int? = nil, completion: @escaping (Result<UserReviewsResponse, Error>) -> Void) {
+        guard let movieId = movieList.id else { return }
+        
+        let getUserReviewsURL = MovieAPIConstant.getUserReviewsURL(movieId)
+        
+        AF.request(getUserReviewsURL, method: .get, headers: self.movieApiHeaders).responseDecodable(of: UserReviewsResponse.self) { response in
+            switch response.result {
+            case .success(let success):
+                completion(.success(success))
+            case .failure(let failure):
+                completion(.failure(failure))
+            }
+        }
+        
     }
 }

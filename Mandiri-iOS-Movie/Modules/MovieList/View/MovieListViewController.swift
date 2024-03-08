@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIScrollView_InfiniteScroll
 
 class MovieListViewController: UIViewController, MovieListViewProtocol {
     
@@ -14,11 +15,11 @@ class MovieListViewController: UIViewController, MovieListViewProtocol {
     private var spinner = UIActivityIndicatorView()
     private var movieList: [MovieListModel] = []
     
-    private let tableView: UITableView = {
-        let table = UITableView()
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        table.isHidden = true
-        return table
+    private let collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.register(MovieListCollectionViewCell.nib(), forCellWithReuseIdentifier: MovieListCollectionViewCell.identifier)
+        collectionView.isHidden = true
+        return collectionView
     }()
     
     private let label: UILabel = {
@@ -32,32 +33,53 @@ class MovieListViewController: UIViewController, MovieListViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(label)
-        view.addSubview(tableView)
+        view.addSubview(collectionView)
         view.addSubview(spinner)
         view.backgroundColor = .systemBackground
-        tableView.delegate = self
-        tableView.dataSource = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         spinner.translatesAutoresizingMaskIntoConstraints = false
         spinner.startAnimating()
         spinner.hidesWhenStopped = true
         
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        let safeArea = view.safeAreaLayoutGuide
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16).isActive = true
+        
     }
     
-    func update(with movieListResponse: MovieListResponse) {
+    func update(with movieListResponse: MovieListResponse, isPagination: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.movieList = movieListResponse.results
-            self?.tableView.reloadData()
-            self?.tableView.isHidden = false
+            if isPagination {
+                self?.movieList.append(contentsOf: movieListResponse.results)
+                self?.collectionView.finishInfiniteScroll()
+            } else {
+                self?.movieList = movieListResponse.results
+                self?.collectionView.addInfiniteScroll(handler: { table in
+                    self?.presenter?.loadMoreMovies()
+                })
+            }
+            self?.collectionView.reloadData()
+            self?.collectionView.isHidden = false
             self?.spinner.stopAnimating()
         }
     }
     
-    func update(with error: any Error) {
+    func update(with error: any Error, isPagination: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.movieList = []
-            self?.tableView.isHidden = true
+            if isPagination {
+                // TODO: Handle error when paginating
+            } else {
+                self?.movieList = []
+            }
+            self?.collectionView.isHidden = true
             self?.label.text = error.localizedDescription
             self?.label.isHidden = false
             self?.spinner.stopAnimating()
@@ -66,26 +88,29 @@ class MovieListViewController: UIViewController, MovieListViewProtocol {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
         label.frame = view.bounds
         label.center = view.center
     }
 }
 
-extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movieList.count
+extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        self.movieList.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = movieList[indexPath.row].title
-        cell.textLabel?.textColor = .black
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieListCollectionViewCell.identifier, for: indexPath) as? MovieListCollectionViewCell else { return UICollectionViewCell() }
+        cell.config(movieList[indexPath.row])
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presenter?.showMovieDetail(movieList[indexPath.row])
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = self.view.frame.width / 2 - 32
+        let height = width * 4/3 + 32
+        return CGSize(width: width, height: height)
+    }
 }

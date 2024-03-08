@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="MovieListCollectionViewCell" customModule="Mandiri_iOS_Movie" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="240" height="320"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="240" height="320"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="L8A-It-PLB">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="240"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="240" id="Uhh-ww-cO5"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Movie Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9EW-gX-ugK">
+                        <rect key="frame" x="8" y="248" width="224" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="snq-mF-BJm"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Movie Rating" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eDd-Mw-Ryr">
+                        <rect key="frame" x="8" y="280" width="224" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="Iqj-3Y-oyR"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="eDd-Mw-Ryr" secondAttribute="bottom" id="6ph-GA-cDU"/>
+                    <constraint firstItem="9EW-gX-ugK" firstAttribute="top" secondItem="L8A-It-PLB" secondAttribute="bottom" constant="8" symbolic="YES" id="CNW-2Q-Vxw"/>
+                    <constraint firstItem="L8A-It-PLB" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="e26-sF-5p0"/>
+                    <constraint firstAttribute="trailing" secondItem="L8A-It-PLB" secondAttribute="trailing" id="fW8-hX-hPh"/>
+                    <constraint firstItem="eDd-Mw-Ryr" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="fWZ-OD-h9R"/>
+                    <constraint firstItem="L8A-It-PLB" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="hMb-PI-LEL"/>
+                    <constraint firstItem="eDd-Mw-Ryr" firstAttribute="top" secondItem="9EW-gX-ugK" secondAttribute="bottom" constant="8" symbolic="YES" id="kTT-XJ-GoT"/>
+                    <constraint firstAttribute="trailing" secondItem="9EW-gX-ugK" secondAttribute="trailing" constant="8" id="pQ8-eu-jL0"/>
+                    <constraint firstItem="9EW-gX-ugK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="sGh-e6-1Yz"/>
+                    <constraint firstAttribute="trailing" secondItem="eDd-Mw-Ryr" secondAttribute="trailing" constant="8" id="tLs-Pl-khd"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="moviePoster" destination="L8A-It-PLB" id="W30-G2-nV8"/>
+                <outlet property="movieRating" destination="eDd-Mw-Ryr" id="EHx-EW-2CT"/>
+                <outlet property="movieTitle" destination="9EW-gX-ugK" id="Y9f-pQ-lHI"/>
+            </connections>
+            <point key="canvasLocation" x="13.740458015267174" y="19.718309859154932"/>
+        </tableViewCell>
+    </objects>
+</document>

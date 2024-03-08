@@ -23,6 +23,7 @@ class MovieListRouter: MovieListRouterProtocol {
         
         interactor.presenter = presenter
         interactor.movieGenre = movieGenre
+        interactor.page = 1
         
         presenter.router = router
         presenter.view = view

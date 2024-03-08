@@ -21,10 +21,12 @@ class MovieDetailRouter: MovieDetailRouterProtocol {
         
         interactor.presenter = presenter
         interactor.movieList = movieList
+        interactor.page = 1
         
         presenter.router = router
         presenter.view = view
         presenter.interactor = interactor
+        presenter.isPaginationAvailable = true
         
         guard let viewController = view as? UIViewController else { fatalError("Invalid View Protocol Type") }
         

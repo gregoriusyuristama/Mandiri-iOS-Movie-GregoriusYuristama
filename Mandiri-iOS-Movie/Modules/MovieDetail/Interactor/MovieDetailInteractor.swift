@@ -9,6 +9,8 @@ import Foundation
 
 class MovieDetailInteractor: MovieDetailInteractorProtocol {
     
+    var page: Int?
+    
     var presenter: (any MovieDetailPresenterProtocol)?
     
     var manager: any MovieDetailManagerProtocol
@@ -43,6 +45,33 @@ class MovieDetailInteractor: MovieDetailInteractorProtocol {
                 self.presenter?.interactorDidFetchMovieVideos(with: .success(movieTrailer))
             } else {
                 self.presenter?.interactorDidFetchMovieDetail(with: .failure(error!))
+            }
+        }
+    }
+    
+    func getUserReviews() {
+        guard let movieList = movieList, let page = page else { return }
+        
+        manager.getRemoteUserReviews(movieList: movieList, pages: nil) { response, error in
+            if let response = response {
+                self.presenter?.interactorDidFetchUserReviews(with: .success(response.results), isPagination: false, isPaginationAvailable: (page < response.totalPages))
+            } else {
+                self.presenter?.interactorDidFetchUserReviews(with: .failure(error!), isPagination: false, isPaginationAvailable: false)
+            }
+        }
+    }
+    
+    func getMoreUserReviews() {
+        guard let movieList = movieList, var page = page else { return }
+        
+        page += 1
+        self.page = page
+        
+        manager.getRemoteUserReviews(movieList: movieList, pages: page) { response, error in
+            if let response = response {
+                self.presenter?.interactorDidFetchUserReviews(with: .success(response.results), isPagination: true, isPaginationAvailable: (page < response.totalPages))
+            } else {
+                self.presenter?.interactorDidFetchUserReviews(with: .failure(error!), isPagination: true, isPaginationAvailable: false)
             }
         }
     }

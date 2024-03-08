@@ -8,6 +8,7 @@
 import Foundation
 
 class MovieListPresenter: MovieListPresenterProtocol {
+    
     var router: (any MovieListRouterProtocol)?
     
     var interactor: (any MovieListInteractorProtocol)? {
@@ -18,18 +19,22 @@ class MovieListPresenter: MovieListPresenterProtocol {
     
     var view: (any MovieListViewProtocol)?
     
-    func interactorDidFetchMovieList(with result: Result<MovieListResponse, any Error>) {
+    func interactorDidFetchMovieList(with result: Result<MovieListResponse, any Error>, isPagination: Bool) {
         switch result {
         case .success(let movieListResponse):
-            view?.update(with: movieListResponse)
+            view?.update(with: movieListResponse, isPagination: isPagination)
         case .failure(let failure):
-            view?.update(with: failure)
+            view?.update(with: failure, isPagination: isPagination)
         }
     }
     
     func showMovieDetail(_ movieList: MovieListModel) {
         guard let view = view else { return }
         router?.presentMovieDetail(from: view, for: movieList)
+    }
+    
+    func loadMoreMovies() {
+        interactor?.loadMoreMovieList()
     }
     
 }
