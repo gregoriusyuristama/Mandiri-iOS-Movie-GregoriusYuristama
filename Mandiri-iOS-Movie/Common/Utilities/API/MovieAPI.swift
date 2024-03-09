@@ -75,7 +75,11 @@ class MovieAPI {
     func getUserReviews(from movieList: MovieListModel, pages: Int? = nil, completion: @escaping (Result<UserReviewsResponse, Error>) -> Void) {
         guard let movieId = movieList.id else { return }
         
-        let getUserReviewsURL = MovieAPIConstant.getUserReviewsURL(movieId)
+        var getUserReviewsURL = MovieAPIConstant.getUserReviewsURL(movieId)
+        
+        if let pages = pages {
+            getUserReviewsURL += "?page=\(pages)"
+        }
         
         AF.request(getUserReviewsURL, method: .get, headers: self.movieApiHeaders).responseDecodable(of: UserReviewsResponse.self) { response in
             switch response.result {
